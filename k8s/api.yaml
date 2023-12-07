@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hlf-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: hlf-client
+  template:
+    metadata:
+      labels:
+        name: hlf-client
+    spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: hlf-client-pvc
+        - name: ca-client-config
+          configMap:
+            name: ca-client-config
+            items:
+              - key: config.json
+                path: config.json
+                mode: 0544
+      containers:
+        - name: hlf-client
+          stdin: true
+          tty: true
+          resources:
+            limits:
+              memory: "450Mi"
+              cpu: "400m"
+            requests:
+              memory: "400Mi"
+              cpu: "300m"
+          image: 809671339031.dkr.ecr.ap-south-2.amazonaws.com/latest02:01
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: data
+              mountPath: /usr/src/app/connection-profile
+              subPath: connection-profile
+            - name: data
+              mountPath: /organizations
+              subPath: organizations
+            - name: data
+              mountPath: /usr/src/app/wallet
+              subPath: wallet
+            - mountPath: /usr/src/app/config.json
+              name: ca-client-config
+              subPath: config.json  
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hlf-client
+  name: hlf-client-svc
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    name: hlf-client
