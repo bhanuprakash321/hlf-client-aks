@@ -34,7 +34,7 @@ spec:
             requests:
               memory: "400Mi"
               cpu: "300m"
-          image: fabricregistry03.azurecr.io/bhanutestimage
+          image: fabricregistry03.azurecr.io/hlf-client:latest
           imagePullPolicy: Always
           volumeMounts:
             - name: data
