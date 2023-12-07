@@ -34,7 +34,7 @@ spec:
             requests:
               memory: "400Mi"
               cpu: "300m"
-          image: 809671339031.dkr.ecr.ap-south-2.amazonaws.com/latest02:01
+          image: fabricregistry03.azurecr.io/bhanutestimage
           imagePullPolicy: Always
           volumeMounts:
             - name: data
